@@ -1,0 +1,59 @@
+body {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.tables {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: stretch;
+    gap: 30px;
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+.table .table-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.table .table-input .table-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    height: 30px;
+}
+
+.table .table-input .table-row span {
+    width: 50%;
+}
+
+.table .table-input .table-row input {
+    width: 50%;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+}
+
+.table input {
+    height: 30px;
+}
+
+input:active,
+input:focus {
+    outline: none;
+    border-bottom: 2px solid rgb(0, 0, 0);
+}

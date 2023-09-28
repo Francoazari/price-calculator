@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Calculadora de precios</title>
+        <link rel="stylesheet" type="text/css" href="./styles.css" />
+    </head>
+    <body>
+        <h1>Calculadora de precios</h1>
+        <div class="tables">
+            <div class="table">
+                <div class="table-input">
+                    <div class="table-row"><span>Costo producto:</span> <input type="text" id="costProduct" /></div>
+                    <div class="table-row">
+                        <span>Marketing:</span>
+                        <input type="text" id="marketingPercentage" value="10" />
+                    </div>
+                    <div class="table-row">
+                        <span>Porcentaje de venta:</span>
+                        <input type="text" id="sellPercentage" value="2" />
+                    </div>
+                    <div class="table-row">
+                        <span>Porcentaje por retiro:</span>
+                        <input type="text" id="mercadoPagoPercentage" value="4.5" />
+                    </div>
+                    <div class="table-row">
+                        <span>Cuotas sin interes:</span>
+                        <input type="text" id="cuotasPercentage" value="10.54" />
+                    </div>
+                    <div class="table-row"><span>Descuento:</span> <input type="text" id="discountPercentage" /></div>
+                    <div class="table-row"><span>Ganancia:</span> <input type="text" id="profitPercentage" /></div>
+                </div>
+                <input type="button" id="buttonCalculate" onClick="calculate()" value="Calcular precio" />
+            </div>
+
+            <div class="table">
+                <div class="table-input">
+                    <div class="table-row"><span>Costo:</span> <input type="text" id="cost" readonly /></div>
+                    <div class="table-row"><span>Ganancia:</span> <input type="text" id="profit" readonly /></div>
+                    <div class="table-row">
+                        <span>Comisiones:</span>
+                        <input type="text" id="commission" readonly />
+                    </div>
+
+                    <div class="table-row">
+                        <span>Precio c/ descuento:</span>
+                        <input type="text" id="finalPriceWithDiscount" readonly />
+                    </div>
+
+                    <div class="table-row">
+                        <span>Valor final sugerido:</span>
+                        <input type="text" id="suggestPriceWithDiscount" readonly />
+                    </div>
+
+                    <div class="table-row">
+                        <span>Precio s/ descuento:</span>
+                        <input type="text" id="finalPriceWithoutDiscount" readonly />
+                    </div>
+
+                    <div class="table-row">
+                        <span>Valor final sugerido:</span>
+                        <input type="text" id="suggestPriceWithoutDiscount" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function calculate() {
+                const costProduct = !isNaN(parseFloat(document.getElementById("costProduct").value))
+                    ? parseFloat(document.getElementById("costProduct").value)
+                    : 0;
+
+                const marketingPercentage = !isNaN(parseFloat(document.getElementById("marketingPercentage").value))
+                    ? parseFloat(document.getElementById("marketingPercentage").value)
+                    : 0;
+                const sellPercentage = !isNaN(parseFloat(document.getElementById("sellPercentage").value))
+                    ? parseFloat(document.getElementById("sellPercentage").value)
+                    : 0;
+                const mercadoPago = !isNaN(parseFloat(document.getElementById("mercadoPagoPercentage").value))
+                    ? parseFloat(document.getElementById("mercadoPagoPercentage").value)
+                    : 0;
+                const profitPercentage = !isNaN(parseFloat(document.getElementById("profitPercentage").value))
+                    ? parseFloat(document.getElementById("profitPercentage").value)
+                    : 0;
+                const cuotasPercentage = !isNaN(parseFloat(document.getElementById("cuotasPercentage").value))
+                    ? parseFloat(document.getElementById("cuotasPercentage").value)
+                    : 0;
+                const discountPercentage = !isNaN(parseFloat(document.getElementById("discountPercentage").value))
+                    ? parseFloat(document.getElementById("discountPercentage").value)
+                    : 0;
+
+                const totalPercentage = marketingPercentage + sellPercentage + mercadoPago + cuotasPercentage;
+
+                const costInput = document.getElementById("cost");
+                const commissionInput = document.getElementById("commission");
+                const profitInput = document.getElementById("profit");
+                const finalPriceWithDiscount = document.getElementById("finalPriceWithDiscount");
+                const suggestPriceWithDiscount = document.getElementById("suggestPriceWithDiscount");
+                const finalPriceWithoutDiscount = document.getElementById("finalPriceWithoutDiscount");
+                const suggestPriceWithoutDiscount = document.getElementById("suggestPriceWithoutDiscount");
+
+                costInput.value = concatSymbolPeso(costProduct);
+
+                const profitValue = costProduct * (profitPercentage / 100);
+                profitInput.value = concatSymbolPeso(round(profitValue));
+
+                const commissionValue = (costProduct + profitValue) / ((100 - totalPercentage) / 100);
+                commissionInput.value = concatSymbolPeso(round(commissionValue - costProduct - profitValue));
+
+                console.log((costProduct + profitValue) / ((100 - totalPercentage) / 100));
+                console.log(((costProduct + profitValue) / ((100 - totalPercentage) / 100)) * 0.04 * 0.21);
+                const finalPriceWithDiscountValue =
+                    (costProduct + profitValue) / ((100 - totalPercentage) / 100) +
+                    ((costProduct + profitValue) / ((100 - totalPercentage) / 100)) * 0.04 * 0.21;
+                finalPriceWithDiscount.value = concatSymbolPeso(round(finalPriceWithDiscountValue));
+
+                suggestPriceWithDiscount.value = concatSymbolPeso(Math.round10(finalPriceWithDiscountValue, 1));
+
+                if (discountPercentage !== 0) {
+                    const finalPriceWithoutDiscountValue = finalPriceWithDiscountValue / ((100 - discountPercentage) / 100);
+                    finalPriceWithoutDiscount.value = concatSymbolPeso(round(finalPriceWithoutDiscountValue));
+                    suggestPriceWithoutDiscount.value = concatSymbolPeso(Math.round10(finalPriceWithoutDiscountValue, 1));
+                } else {
+                    finalPriceWithoutDiscount.value = "-";
+                    suggestPriceWithoutDiscount.value = "-";
+                }
+            }
+
+            (function () {
+                /**
+                 * Ajuste decimal de un número.
+                 *
+                 * @param {String}  tipo  El tipo de ajuste.
+                 * @param {Number}  valor El numero.
+                 * @param {Integer} exp   El exponente (el logaritmo 10 del ajuste base).
+                 * @returns {Number} El valor ajustado.
+                 */
+                function decimalAdjust(type, value, exp) {
+                    // Si el exp no está definido o es cero...
+                    if (typeof exp === "undefined" || +exp === 0) {
+                        return Math[type](value);
+                    }
+                    value = +value;
+                    exp = +exp;
+                    // Si el valor no es un número o el exp no es un entero...
+                    if (isNaN(value) || !(typeof exp === "number" && exp % 1 === 0)) {
+                        return NaN;
+                    }
+                    // Shift
+                    value = value.toString().split("e");
+                    value = Math[type](+(value[0] + "e" + (value[1] ? +value[1] - exp : -exp)));
+                    // Shift back
+                    value = value.toString().split("e");
+                    return +(value[0] + "e" + (value[1] ? +value[1] + exp : exp));
+                }
+
+                // Decimal round
+                if (!Math.round10) {
+                    Math.round10 = function (value, exp) {
+                        return decimalAdjust("round", value, exp);
+                    };
+                }
+                // Decimal floor
+                if (!Math.floor10) {
+                    Math.floor10 = function (value, exp) {
+                        return decimalAdjust("floor", value, exp);
+                    };
+                }
+                // Decimal ceil
+                if (!Math.ceil10) {
+                    Math.ceil10 = function (value, exp) {
+                        return decimalAdjust("ceil", value, exp);
+                    };
+                }
+            })();
+
+            function round(num, decimales = 2) {
+                var signo = num >= 0 ? 1 : -1;
+                num = num * signo;
+                if (decimales === 0)
+                    //con 0 decimales
+                    return signo * Math.round(num);
+                // round(x * 10 ^ decimales)
+                num = num.toString().split("e");
+                num = Math.round(+(num[0] + "e" + (num[1] ? +num[1] + decimales : decimales)));
+                // x * 10 ^ (-decimales)
+                num = num.toString().split("e");
+                return signo * (num[0] + "e" + (num[1] ? +num[1] - decimales : -decimales));
+            }
+
+            function concatSymbolPeso(numero) {
+                return `$ ${numero}`;
+            }
+        </script>
+    </body>
+</html>
