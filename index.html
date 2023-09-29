@@ -118,7 +118,8 @@
                 const commissionValue = (costProduct + profitValue) / ((100 - totalPercentage) / 100);
                 commissionInput.value = concatSymbolPeso(round(commissionValue - costProduct - profitValue));
 
-                priceInCash.value = concatSymbolPeso(Math.round10(costProduct + profitValue, 1));
+                const priceInCashValue = (costProduct + fixedCost + profitValue) / ((100 - marketingPercentage)/100);
+                priceInCash.value = concatSymbolPeso(priceInCashValue, 1);
 
                 const finalPriceWithDiscountValue =
                     (costProduct + profitValue + fixedCost) / ((100 - totalPercentage) / 100) +
