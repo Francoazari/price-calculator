@@ -44,6 +44,7 @@
                         <input type="text" id="commission" readonly />
                     </div>
 
+                    
                     <div class="table-row">
                         <span>Precio efectivo:</span>
                         <input type="text" id="priceInCash" readonly />
@@ -99,8 +100,7 @@
                     ? parseFloat(document.getElementById("discountPercentage").value)
                     : 0;
 
-                const totalPercentage = marketingPercentage + sellPercentage + mercadoPago + cuotasPercentage;
-
+                    
                 const costInput = document.getElementById("cost");
                 const commissionInput = document.getElementById("commission");
                 const profitInput = document.getElementById("profit");
@@ -109,6 +109,8 @@
                 const suggestPriceWithDiscount = document.getElementById("suggestPriceWithDiscount");
                 const finalPriceWithoutDiscount = document.getElementById("finalPriceWithoutDiscount");
                 const suggestPriceWithoutDiscount = document.getElementById("suggestPriceWithoutDiscount");
+                
+                const totalPercentage = marketingPercentage + sellPercentage + mercadoPago + cuotasPercentage;
 
                 costInput.value = concatSymbolPeso(costProduct);
 
@@ -119,19 +121,19 @@
                 commissionInput.value = concatSymbolPeso(round(commissionValue - costProduct - profitValue));
 
                 const priceInCashValue = (costProduct + fixedCost + profitValue) / ((100 - marketingPercentage)/100);
-                priceInCash.value = concatSymbolPeso(priceInCashValue, 1);
+                priceInCash.value = concatSymbolPeso(customRound(priceInCashValue), 1);
 
                 const finalPriceWithDiscountValue =
                     (costProduct + profitValue + fixedCost) / ((100 - totalPercentage) / 100) +
                     ((costProduct + profitValue + fixedCost) / ((100 - totalPercentage) / 100)) * 0.04 * 0.21;
                 finalPriceWithDiscount.value = concatSymbolPeso(round(finalPriceWithDiscountValue));
 
-                suggestPriceWithDiscount.value = concatSymbolPeso(Math.round10(finalPriceWithDiscountValue, 1));
+                suggestPriceWithDiscount.value = concatSymbolPeso(customRound((finalPriceWithDiscountValue)));
 
                 if (discountPercentage !== 0) {
                     const finalPriceWithoutDiscountValue = finalPriceWithDiscountValue / ((100 - discountPercentage) / 100);
                     finalPriceWithoutDiscount.value = concatSymbolPeso(round(finalPriceWithoutDiscountValue));
-                    suggestPriceWithoutDiscount.value = concatSymbolPeso(Math.round10(finalPriceWithoutDiscountValue, 1));
+                    suggestPriceWithoutDiscount.value = concatSymbolPeso(customRound(finalPriceWithoutDiscountValue));
                 } else {
                     finalPriceWithoutDiscount.value = "-";
                     suggestPriceWithoutDiscount.value = "-";
@@ -202,6 +204,22 @@
 
             function concatSymbolPeso(numero) {
                 return `$ ${numero}`;
+            }
+
+            
+
+            function customRound(num){
+                console.log(num);
+                if(num % 100 === 0){
+                    return num;
+                }
+
+                num = parseInt(num)
+                while(num % 100 !== 0){
+                    num++;
+                }
+
+                return num;
             }
 
             document.addEventListener("keyup", function(event) {
